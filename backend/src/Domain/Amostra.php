@@ -1,4 +1,10 @@
 <?php
+
+namespace App\Domain;
+
+use DateTime;
+use Exception;
+
 class Amostra
 {
     private ?int $id;
@@ -57,6 +63,11 @@ class Amostra
         $this->codigo = $this->criarCodigoAmostra($sequencial);
     }
 
+    public function obterCodigo(): ?string
+    {
+        return $this->codigo;
+    }
+
     public function definirTipo(string $tipo): void
     {
         if ($this->amostraBloqueada()) {
@@ -66,6 +77,11 @@ class Amostra
             throw new Exception("Informe um tipo válido.");
         }
         $this->tipo = $tipo;
+    }
+
+    public function obterStatus(): string
+    {
+        return $this->status;
     }
 
     public function definirTecnico(?string $tecnico): void
