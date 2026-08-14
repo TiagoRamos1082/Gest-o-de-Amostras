@@ -1,0 +1,136 @@
+<?php
+class Amostra
+{
+    private ?int $id;
+    private ?string $codigo;
+    private string $tipo;
+    private string $status;
+    private ?string $responsavel_tecnico;
+    private DateTime $data_recebimento;
+    private ?DateTime $data_conclusao;
+    private bool $bloqueada;
+
+    public function __construct(
+        string $tipo,
+        ?string $responsavel_tecnico,
+        string $data_recebimento,
+    ) {
+        $this->id = null;
+        $this->codigo = null;
+        $this->tipo = $tipo;
+        $this->status = "Recebida";
+        $this->responsavel_tecnico = $responsavel_tecnico;
+        $this->data_recebimento = new DateTime($data_recebimento);
+        $this->data_conclusao = null;
+        $this->bloqueada = false;
+    }
+
+    private function amostraBloqueada(): bool
+    {
+        return $this->bloqueada;
+    }
+
+    private function definirBloqueada(): void
+    {
+        $this->bloqueada = true;
+    }
+
+    public function definirId(int $id): void
+    {
+        if ($this->id !== null) {
+            throw new Exception("ID já definido.");
+        }
+        if ($id <= 0) {
+            throw new Exception("ID inválido.");
+        }
+        $this->id = $id;
+    }
+
+    public function definirCodigo(int $sequencial): void
+    {
+        if ($sequencial <= 0) {
+            throw new Exception("Sequencial inválido.");
+        }
+        if ($this->codigo !== null) {
+            throw new Exception("Código já definido.");
+        }
+        $this->codigo = $this->criarCodigoAmostra($sequencial);
+    }
+
+    public function definirTipo(string $tipo): void
+    {
+        if ($this->amostraBloqueada()) {
+            throw new Exception("Amostra já finalizada.");
+        }
+        if (empty($tipo)) {
+            throw new Exception("Informe um tipo válido.");
+        }
+        $this->tipo = $tipo;
+    }
+
+    public function definirTecnico(?string $tecnico): void
+    {
+        if ($this->amostraBloqueada()) {
+            throw new Exception("Amostra já finalizada.");
+        }
+        $this->responsavel_tecnico = $tecnico;
+    }
+
+    private function criarCodigoAmostra(int $sequencial): string
+    {
+        $prefixo = "CAND108";
+        $ano = $this->data_recebimento->format('Y');
+        return sprintf("%s-%s-%06d", $prefixo, $ano, $sequencial);
+    }
+
+    public function iniciarAnalise(): void
+    {
+        if ($this->amostraBloqueada()) {
+            throw new Exception("Amostra já finalizada.");
+        }
+        if ($this->status !== "Recebida") {
+            throw new Exception("Amostra não pode ser colocada em análise.");
+        }
+        if (empty($this->responsavel_tecnico)) {
+            throw new Exception("Responsável técnico é obrigatório.");
+        }
+        $this->status = "EmAnalise";
+    }
+
+    public function concluirAnalise($data_conclusao): void
+    {
+        if ($this->amostraBloqueada()) {
+            throw new Exception("Amostra já finalizada.");
+        }
+        if ($this->status !== "EmAnalise") {
+            throw new Exception("Amostra não está em análise.");
+        }
+        if (empty($data_conclusao)) {
+            throw new Exception("Data de conclusão é obrigatória.");
+        }
+        try {
+            $dataConclusao = new DateTime($data_conclusao);
+            $dataRecebimento = $this->data_recebimento;
+        } catch (Exception $exception) {
+            throw new Exception("Data de conclusão inválida.");
+        }
+        if ($dataConclusao < $dataRecebimento) {
+            throw new Exception("Data de conclusão deve ser posterior à data de recebimento.");
+        }
+        $this->data_conclusao = $dataConclusao;
+        $this->status = "Concluida";
+        $this->definirBloqueada();
+    }
+
+    public function rejeitarAmostra(): void
+    {
+        if ($this->amostraBloqueada()) {
+            throw new Exception("Amostra já finalizada.");
+        }
+        if ($this->status === "Concluida") {
+            throw new Exception("Não é possível rejeitar uma amostra já concluída.");
+        }
+        $this->status = "Rejeitada";
+        $this->definirBloqueada();
+    }
+}
