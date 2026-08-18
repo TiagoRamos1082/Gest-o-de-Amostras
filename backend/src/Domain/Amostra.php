@@ -52,6 +52,10 @@ class Amostra
         $this->id = $id;
     }
 
+    public function obterId(): int {
+        return $this->id;
+    }
+
     public function definirCodigo(int $sequencial): void
     {
         if ($sequencial <= 0) {
@@ -79,9 +83,19 @@ class Amostra
         $this->tipo = $tipo;
     }
 
+    public function obterTipo(): string
+    {
+        return $this->tipo;
+    }
+
     public function obterStatus(): string
     {
         return $this->status;
+    }
+
+    public function obterResponsavelTecnico(): string
+    {
+        return $this->responsavel_tecnico;
     }
 
     public function definirTecnico(?string $tecnico): void
@@ -90,6 +104,16 @@ class Amostra
             throw new Exception("Amostra já finalizada.");
         }
         $this->responsavel_tecnico = $tecnico;
+    }
+
+    public function obterDataRecebimento(): DateTime
+    {
+        return $this->data_recebimento;
+    }
+
+    public function obterAnoDataRecebimento(): int
+    {
+        return (int) $this->data_recebimento->format('Y');
     }
 
     private function criarCodigoAmostra(int $sequencial): string
@@ -113,7 +137,7 @@ class Amostra
         $this->status = "EmAnalise";
     }
 
-    public function concluirAnalise($data_conclusao): void
+    public function concluirAnalise(string $data_conclusao): void
     {
         if ($this->amostraBloqueada()) {
             throw new Exception("Amostra já finalizada.");

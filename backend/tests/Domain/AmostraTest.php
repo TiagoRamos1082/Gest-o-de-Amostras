@@ -163,7 +163,6 @@ class AmostraTest extends TestCase
         $amostra = new Amostra("Agua", null, "2026-08-13");
         $amostra->definirId(1);
 
-        // Não há getId() na classe atual; a ausência de exceção já confirma sucesso.
         $this->assertTrue(true);
     }
 
@@ -268,5 +267,12 @@ class AmostraTest extends TestCase
 
         $this->expectException(Exception::class);
         $amostra->definirTecnico("Maria");
+    }
+
+    public function testRetornoDoAnoDaDataDeRecebimento(): void
+    {
+        $amostra = new Amostra("Agua", "Joao", "2026-08-13");
+
+        $this->assertSame(2026, $amostra->obterAnoDataRecebimento());
     }
 }
