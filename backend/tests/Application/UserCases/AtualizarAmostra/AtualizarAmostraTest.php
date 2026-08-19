@@ -33,3 +33,5 @@ class AtualizarAmostraTest extends TestCase
         $this->assertTrue($resultado);
     }
 }
+
+?>
