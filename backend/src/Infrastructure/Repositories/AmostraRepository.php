@@ -50,6 +50,25 @@ class AmostraRepository implements AmostraRepositoryInterface
 
     }
 
+    public function obterPorId(int $id): array|false
+    {
+        $sql = '
+            SELECT *
+            FROM amostras
+            WHERE id = :id
+        ';
+
+        $stmt = $this->connection->prepare($sql);
+
+        $stmt->execute([
+            'id' => $id
+        ]);
+
+        $dados = $stmt->fetch();
+
+        return $dados;
+    }
+
     public function salvar(Amostra $amostra): void
     {
         $sql = "
@@ -95,6 +114,35 @@ class AmostraRepository implements AmostraRepositoryInterface
         ]);
 
     }
+
+    public function atualizar(Amostra $amostra): void
+    {
+
+        $sql = '
+            UPDATE amostras
+            SET
+                tipo = :tipo,
+                status = :status,
+                responsavel_tecnico = :responsavel_tecnico,
+                data_conclusao = :data_conclusao,
+                bloqueada = :bloqueado
+            WHERE id = :id
+        ';
+
+        $stmt = $this->connection->prepare($sql);
+
+        $stmt->execute([
+            'tipo' => $amostra->obterTipo(),
+            'status' => $amostra->obterStatus(),
+            'responsavel_tecnico' => $amostra->obterResponsavelTecnico(),
+            'data_conclusao' => $amostra->obterDataConclusao(),
+            'bloqueado' => $amostra->estaBloqueada() ? 1 : 0,
+            'id' => $amostra->obterId()
+        ]);
+
+
+    }
+
 
 }
 

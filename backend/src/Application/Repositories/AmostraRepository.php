@@ -8,8 +8,12 @@
     {
         public function obterProximoSequencial(int $ano): int;
 
+        public function obterPorId(int $id): array|false;
+
         public function salvar(Amostra $amostra): void;
 
         public function deletar(int $id): void;
+
+        public function atualizar(Amostra $amostra): void;
     }
 ?>

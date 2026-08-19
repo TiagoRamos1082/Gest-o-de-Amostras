@@ -110,6 +110,60 @@ class AmostraRepositoryTest extends TestCase
 
         $this->assertFalse($resultado);
     }
+
+    public function testDeveAtualizarAmostra(): void
+    {
+        $amostra = new Amostra(
+            tipo: "Água",
+            responsavel_tecnico: "João",
+            data_recebimento: "2026-08-17",
+        );
+
+        $sequencial = $this->repository->obterProximoSequencial(
+            $amostra->obterAnoDataRecebimento()
+        );
+
+        $amostra->definirCodigo($sequencial);
+
+        $this->repository->salvar($amostra);
+
+        // Altera a amostra
+        $amostra->definirTipo("Solo");
+
+        $this->repository->atualizar($amostra);
+
+        // Busca novamente no banco
+        $sql = "
+            SELECT * FROM amostras WHERE id = :id
+        ";
+
+        $stmt = $this->connection->prepare($sql);
+
+        $stmt->execute([
+            'id' => $amostra->obterId()
+        ]);
+
+        $resultado = $stmt->fetch();
+
+        $this->assertNotFalse($resultado);
+        $this->assertSame("Solo", $resultado['tipo']);
+        $this->assertSame($amostra->obterStatus(), $resultado['status']);
+        $this->assertSame(
+            $amostra->obterResponsavelTecnico(),
+            $resultado['responsavel_tecnico']
+        );
+
+        // Limpeza
+        $sql = "
+            DELETE FROM amostras WHERE id = :id
+        ";
+
+        $stmt = $this->connection->prepare($sql);
+
+        $stmt->execute([
+            'id' => $amostra->obterId()
+        ]);
+    }
 }
 
 ?>

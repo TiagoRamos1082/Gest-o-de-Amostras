@@ -36,6 +36,11 @@ class Amostra
         return $this->bloqueada;
     }
 
+    public function estaBloqueada(): bool
+    {
+        return $this->bloqueada;
+    }
+
     private function definirBloqueada(): void
     {
         $this->bloqueada = true;
@@ -111,6 +116,11 @@ class Amostra
         return $this->data_recebimento;
     }
 
+    public function obterDataConclusao(): ?DateTime
+    {
+        return $this->data_conclusao;
+    }
+
     public function obterAnoDataRecebimento(): int
     {
         return (int) $this->data_recebimento->format('Y');
@@ -174,3 +184,5 @@ class Amostra
         $this->definirBloqueada();
     }
 }
+
+?>
