@@ -275,4 +275,31 @@ class AmostraTest extends TestCase
 
         $this->assertSame(2026, $amostra->obterAnoDataRecebimento());
     }
+
+    public function testDeveReconstruirAmostra(): void
+    {
+        $amostra = Amostra::reconstruir(
+            id: 67,
+            codigo: 'CAND108-2026-000067',
+            tipo: 'Água',
+            status: 'EmAnalise',
+            responsavelTecnico: 'João',
+            dataRecebimento: '2026-08-18',
+            dataConclusao: null,
+            bloqueada: false
+        );
+
+        $this->assertSame(67, $amostra->obterId());
+        $this->assertSame(
+            'CAND108-2026-000067',
+            $amostra->obterCodigo()
+        );
+        $this->assertSame('Água', $amostra->obterTipo());
+        $this->assertSame('EmAnalise', $amostra->obterStatus());
+        $this->assertSame(
+            'João',
+            $amostra->obterResponsavelTecnico()
+        );
+        $this->assertFalse($amostra->estaBloqueada());
+    }
 }

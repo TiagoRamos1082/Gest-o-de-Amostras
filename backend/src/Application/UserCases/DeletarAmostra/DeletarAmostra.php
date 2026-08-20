@@ -15,10 +15,8 @@ class DeletarAmostra
         $this->repository = $repository;
     }
 
-    public function executar(Amostra $amostra): bool
+    public function executar(int $id): bool
     {
-        $id = $amostra->obterId();
-
         $this->repository->deletar($id);
 
         return true;

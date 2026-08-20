@@ -31,6 +31,33 @@ class Amostra
         $this->bloqueada = false;
     }
 
+    public static function reconstruir(
+        int $id,
+        string $codigo,
+        string $tipo,
+        string $status,
+        ?string $responsavelTecnico,
+        string $dataRecebimento,
+        ?string $dataConclusao,
+        bool $bloqueada
+    ): self {
+        $amostra = new self(
+            $tipo,
+            $responsavelTecnico,
+            $dataRecebimento
+        );
+
+        $amostra->id = $id;
+        $amostra->codigo = $codigo;
+        $amostra->status = $status;
+        $amostra->data_conclusao = $dataConclusao !== null
+            ? new DateTime($dataConclusao)
+            : null;
+        $amostra->bloqueada = $bloqueada;
+
+        return $amostra;
+    }
+
     private function amostraBloqueada(): bool
     {
         return $this->bloqueada;
@@ -98,7 +125,7 @@ class Amostra
         return $this->status;
     }
 
-    public function obterResponsavelTecnico(): string
+    public function obterResponsavelTecnico(): ?string
     {
         return $this->responsavel_tecnico;
     }

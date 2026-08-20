@@ -28,7 +28,7 @@ class DeletarAmostraTest extends TestCase
 
         $deletarAmostra = new DeletarAmostra($repository);
 
-        $resultado = $deletarAmostra->executar($amostra);
+        $resultado = $deletarAmostra->executar(39);
 
         $this->assertTrue($resultado);
     }

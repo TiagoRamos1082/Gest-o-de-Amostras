@@ -69,6 +69,38 @@ class AmostraRepository implements AmostraRepositoryInterface
         return $dados;
     }
 
+    public function obterAmostraPorId(int $id): Amostra|false
+    {
+        $sql = '
+            SELECT *
+            FROM amostras
+            WHERE id = :id
+        ';
+
+        $stmt = $this->connection->prepare($sql);
+
+        $stmt->execute([
+            'id' => $id
+        ]);
+
+        $dados = $stmt->fetch();
+
+        if ($dados === false) {
+            return false;
+        }
+
+        return Amostra::reconstruir(
+            id: (int) $dados['id'],
+            codigo: $dados['codigo'],
+            tipo: $dados['tipo'],
+            status: $dados['status'],
+            responsavelTecnico: $dados['responsavel_tecnico'],
+            dataRecebimento: $dados['data_recebimento'],
+            dataConclusao: $dados['data_conclusao'],
+            bloqueada: (bool) $dados['bloqueada']
+        );
+    }
+
     public function salvar(Amostra $amostra): void
     {
         $sql = "
@@ -135,7 +167,7 @@ class AmostraRepository implements AmostraRepositoryInterface
             'tipo' => $amostra->obterTipo(),
             'status' => $amostra->obterStatus(),
             'responsavel_tecnico' => $amostra->obterResponsavelTecnico(),
-            'data_conclusao' => $amostra->obterDataConclusao(),
+            'data_conclusao' => $amostra->obterDataConclusao()?->format('Y-m-d'),
             'bloqueado' => $amostra->estaBloqueada() ? 1 : 0,
             'id' => $amostra->obterId()
         ]);

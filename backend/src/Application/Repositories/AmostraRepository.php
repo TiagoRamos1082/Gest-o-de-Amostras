@@ -10,6 +10,8 @@
 
         public function obterPorId(int $id): array|false;
 
+        public function obterAmostraPorId(int $id): Amostra|false;
+
         public function salvar(Amostra $amostra): void;
 
         public function deletar(int $id): void;

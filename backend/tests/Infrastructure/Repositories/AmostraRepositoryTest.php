@@ -164,6 +164,40 @@ class AmostraRepositoryTest extends TestCase
             'id' => $amostra->obterId()
         ]);
     }
+
+    public function testDeveObterAmostraPorIdComoEntidade(): void
+    {
+        $amostra = new Amostra(
+            tipo: "Água",
+            responsavel_tecnico: "João",
+            data_recebimento: "2026-08-17",
+        );
+
+        $sequencial = $this->repository->obterProximoSequencial(
+            $amostra->obterAnoDataRecebimento()
+        );
+
+        $amostra->definirCodigo($sequencial);
+
+        $this->repository->salvar($amostra);
+
+        $id = $amostra->obterId();
+
+        $resultado = $this->repository->obterAmostraPorId($id);
+
+        $this->assertInstanceOf(Amostra::class, $resultado);
+        $this->assertSame($id, $resultado->obterId());
+
+        // Limpeza
+        $this->repository->deletar($id);
+    }
+
+    public function testDeveRetornarFalseQuandoAmostraNaoExistir(): void
+    {
+        $resultado = $this->repository->obterAmostraPorId(999999);
+
+        $this->assertFalse($resultado);
+    }
 }
 
 ?>
