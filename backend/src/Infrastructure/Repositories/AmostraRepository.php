@@ -176,6 +176,21 @@ class AmostraRepository implements AmostraRepositoryInterface
     }
 
 
+    public function obterAmostras(): array
+    {
+        $sql = '
+            SELECT *
+            FROM amostras
+        ';
+
+        $stmt = $this->connection->prepare($sql);
+
+        $stmt->execute();
+
+        $resultado = $stmt->fetchAll();
+
+        return $resultado;
+    }
 }
 
 

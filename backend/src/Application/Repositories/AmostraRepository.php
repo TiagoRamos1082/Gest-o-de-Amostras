@@ -12,6 +12,8 @@
 
         public function obterAmostraPorId(int $id): Amostra|false;
 
+        public function obterAmostras(): array;
+
         public function salvar(Amostra $amostra): void;
 
         public function deletar(int $id): void;
